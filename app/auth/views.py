@@ -26,10 +26,10 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user)
-            flash('用户%s登录成功' %(user.username))
+            flash('用户%s登录成功' %(user.username),category='success')
             return redirect(url_for('auth.index'))
         else:
-            flash('用户%s登录失败，无效的用户名和密码.' %(form.email.data))
+            flash('用户%s登录失败，错误的用户名或密码.' %(form.email.data),category='error')
             return redirect(url_for('auth.login'))
 
     return render_template('auth/login.html', form=form)
@@ -57,7 +57,7 @@ def register():
         user.email = form.email.data
         user.role = Role.query.filter_by(username = '普通会员').first()
         db.session.add(user)
-        flash('用户%s注册成功' %(user.username))
+        flash('用户%s注册成功' %(user.username),category='success')
         #注册成功跳转至登录页面
         #return redirect('/longin')
         #方法二，通过视图函数寻找对应的路由地址
@@ -69,7 +69,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('用户注销成功.')
+    flash('用户注销成功.',category='success')
 
     #return 'longout'
     return redirect(url_for('auth.index'))

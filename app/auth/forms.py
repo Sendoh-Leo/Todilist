@@ -8,13 +8,25 @@ from wtforms.validators import DataRequired,Length,Email,Regexp,EqualTo,Validati
 from app.models import User
 
 class RegisterationForm(FlaskForm):
-    email = StringField('电子邮箱',validators=[DataRequired(),Length(1,100),Email()])
+    email = StringField('电子邮箱',validators=[DataRequired(),Length(1,100),Email()],
+                        # 给前端登录界面添加提示信息
+                        render_kw={'class': 'layui-input', 'placeholder': '电子邮箱'}
+                        )
 
-    username = StringField('用户名',validators=[DataRequired(), Length(1, 64), Regexp('^\w*$', message='用户名只能由字母数字或者下划线组成')])
+    username = StringField('用户名',validators=[DataRequired(), Length(1, 64), Regexp('^\w*$', message='用户名只能由字母数字或者下划线组成')],
+                           # 给前端登录界面添加提示信息
+                           render_kw={'class': 'layui-input', 'placeholder': '用户名'}
+                           )
 
-    password = PasswordField('密码',validators=[DataRequired()])
+    password = PasswordField('密码',validators=[DataRequired()],
+                             # 给前端登录界面添加提示信息
+                             render_kw={'class': 'layui-input', 'placeholder': '密码'}
+                             )
 
-    repassword = PasswordField('确认密码',validators=[DataRequired(),EqualTo('password',message='密码不一致')])
+    repassword = PasswordField('确认密码',validators=[DataRequired(),EqualTo('password',message='密码不一致')],
+                               # 给前端登录界面添加提示信息
+                               render_kw={'class': 'layui-input', 'placeholder': '确认密码'}
+                               )
 
     submit = SubmitField('注册')
 
@@ -32,7 +44,11 @@ class RegisterationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """用户登录表单"""
-    email = StringField('电子邮箱', validators=[DataRequired(), Length(1, 64), Email()])
-    password = PasswordField('密码', validators=[DataRequired()])
+    email = StringField('电子邮箱', validators=[DataRequired(), Length(1, 64), Email()],
+                        #给前端登录界面添加提示信息
+                        render_kw={'class': 'layui-input', 'placeholder': '电子邮箱'})
+    password = PasswordField('密码', validators=[DataRequired()],
+                             #给前端登录界面添加提示信息
+                             render_kw={'class': 'layui-input', 'placeholder': '密码'})
     submit = SubmitField('登录')
 
