@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>您好</p>
+<p>
+    感谢您注册任务清单管理平台: <br/>
+    你的注册邮箱地址为： {{ user.email }}<br/>
+    你的注册用户名为： {{ user.username }}<br/>
+    激活链接： <a href="{{url_for('auth.confirm',token = token,_external=True)}}">{{url_for('auth.confirm',token = token,_external=True)}}</a>
+</p>
+</body>
+</html>

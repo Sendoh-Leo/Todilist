@@ -14,6 +14,7 @@ from app import db, login_manager
 
 from flask_login import UserMixin
 
+from itsdangerous import TimedJSONWebSignatureSerializer
 #类继承一个model对象，Flask中一个Model子类就是一个数据库表，表名默认  '类名'.lower()
 class User(UserMixin,db.Model):
     """ Flask-Login 提供了一个 UserMixin 类,包含常用方法的默认实现,且能满足大多数需求。
@@ -34,6 +35,8 @@ class User(UserMixin,db.Model):
     password_hash = db.Column(db.String(200),nullable=False)
     #邮箱
     email = db.Column(db.String(50))
+    #邮件确认
+    confirmed = db.Column(db.Boolean, default=False)
 
     #外键关联：表示一对多关系
     role_id=db.Column(db.Integer,db.ForeignKey('roles.id'))
@@ -53,6 +56,26 @@ class User(UserMixin,db.Model):
     def verify_password(self,password):    #验证密码
         # check_password_hash(hash, password) :密码散列值和用户输入的密码是否匹配.
         return check_password_hash(self.password_hash, password)
+
+    def generate_confirmation_token(self, expiration=3600):
+        """生成一个令牌,有效期默认为一小时。"""
+        s = TimedJSONWebSignatureSerializer('westos', expiration)
+        #对当前用户id进行加密并返回
+        return s.dumps({'confirm': self.id})
+
+    def confirm(self, token):
+        """ 检验令牌和检查令牌中id和已登录用户id是否匹配?如果检验通过,则把新添加的 confirmed 属 性设为 True"""
+        s = TimedJSONWebSignatureSerializer('westos')
+        try:
+            data = s.loads(token)    #{'confirm': 1}
+        except Exception as e:
+            return False
+        else:
+            self.confirmed = True
+            db.session.add(self)
+            db.session.commit()
+            return True
+
 
     def __repr__(self):
         return '<User % r>' % self.username

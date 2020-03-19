@@ -2,6 +2,10 @@
 #date:2020/3/109:01
 #author:CQ_Liu
 from app.todo import todo
+
+@todo.route('/')
+def index():
+    return 'todo index'
 @todo.route('/add/')
 def add():
     return 'todo add'
