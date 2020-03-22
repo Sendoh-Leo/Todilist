@@ -16,6 +16,7 @@ qq邮箱的配置信息：需写入配置中    （163邮箱的配置信息已�
    # 此处的密码并非邮箱登录密码， 而是开启   pop3 MAIL_PASSWORD = "自己的密码123sdjuoeyoxjoubedb"
 """
 
+
 class Config:
     """
     所有配置环境的基类, 包含通用配置
@@ -25,7 +26,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # FLASKY_MAIL_SUBJECT_PREFIX = '[西部开源]'
     # FLASKY_MAIL_SENDER = '976131979@qq.com'
-
+    PER_PAGE = 5
     @staticmethod
     def init_app(app):
         pass

@@ -26,9 +26,10 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user)
+            user.ping()        #用户登录成功，更新最后一次登录时间
             flash('用户%s登录成功' %(user.username),category='success')
             #return redirect(url_for('auth.index'))   此处定位到auth.index不会进行comfirmed判断，即用户confirmed状态为True或者False都可以登录跳转到auth.index
-            return redirect(url_for('todo.index'))    #此处定位到todo.index，定位时回用钩子函数进行判定，如果confirmed=False，则进行验证等操作
+            return redirect(url_for('todo.list'))    #此处定位到todo.index，定位时回用钩子函数进行判定，如果confirmed=False，则进行验证等操作
         else:
             flash('用户%s登录失败，错误的用户名或密码.' %(form.email.data),category='error')
             return redirect(url_for('auth.login'))
@@ -93,12 +94,13 @@ def confirm(token):
     :return:
     """
     if current_user.confirmed:
-        return redirect(url_for('todo.index'))
+        return redirect(url_for('todo.list'))
     if current_user.confirm(token):
         flash('验证邮箱通过', category='success')
+        return redirect(url_for('todo.list'))
     else:
         flash('验证连接失效', category='error')
-    return redirect(url_for('todo.index'))
+        return redirect(url_for('auth.login'))
 
 @auth.before_app_request
 def before_request():
@@ -118,7 +120,7 @@ def before_request():
 def unconfirmed():
     # 如果当前用户是匿名用户或者已经验证的用户， 则访问主页, 否则进入未验证界面;
     if current_user.is_anonymous or current_user.confirmed:
-        return redirect(url_for('todo.index'))
+        return redirect(url_for('todo.list'))
     token = current_user.generate_confirmation_token()
     return render_template('auth/unconfirmed.html')
 
@@ -134,4 +136,4 @@ def resend_confirmation():
         return redirect(url_for('auth.register'))
     else:
         flash('新的平台验证消息已经发送到你的邮箱， 请确认后登录.', category='success')
-        return redirect(url_for('todo.index'))
+        return redirect(url_for('auth.login'))

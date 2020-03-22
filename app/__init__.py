@@ -48,6 +48,8 @@ def create_app(config_name='development'):
     #auth为蓝图对象
     app.register_blueprint(auth, url_prefix='/auth')
 
+    from app.user import  user
+    app.register_blueprint(user)
     from app.todo import todo
     app.register_blueprint(todo,url_prefix='/todo')  # 注册蓝本
     return app
